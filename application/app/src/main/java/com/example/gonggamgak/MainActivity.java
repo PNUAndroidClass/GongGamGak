@@ -87,7 +87,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        보여줘 : 앞에 어떤 물체가 있는지 알려주는 기능
         switch (order){
             case "읽어줘":
-
+                Intent intent = new Intent(MainActivity.this,ReadActivity.class);
+                startActivity(intent);
                 break;
             case "보여줘":
 
