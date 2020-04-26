@@ -11,12 +11,16 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Locale;
+
+import static android.speech.tts.TextToSpeech.ERROR;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Intent intent;
@@ -24,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tv_result;
     private Button btn_start;
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
+    private TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_main);
         bindUI();
+        setTTS();
 
     }
 
@@ -64,12 +70,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRecognizer.setRecognitionListener(recognitionListener);
 
     }
+    private void setTTS(){
+        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != ERROR) {
+                    // 언어를 선택한다.
+                    tts.setLanguage(Locale.KOREAN);
+                }
+            }
+        });
+    }
+    private void handleVoiceOrder(String order){
+//        들어줘 : 전체 기능을 음성으로 사용하는 기능
+//        읽어줘 : 텍스트 인식 후 사용자에게 들려주는 기능
+//        보여줘 : 앞에 어떤 물체가 있는지 알려주는 기능
+        switch (order){
+            case "읽어줘":
+
+                break;
+            case "보여줘":
+
+                break;
+            case "알려줘":
+
+                break;
+        }
+    }
 
     private RecognitionListener recognitionListener = new RecognitionListener() {
         @Override
         public void onReadyForSpeech(Bundle bundle) {
-            tv_result.setText("들을 준비가 됬습니다.");
-
+            tts.speak("원하시는 명령을 해주세요.",TextToSpeech.QUEUE_FLUSH, null);
         }
 
         @Override
@@ -105,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mResult.toArray(rs);
 
             tv_result.setText(rs[0]);
+            handleVoiceOrder(rs[0]);
         }
 
         @Override
