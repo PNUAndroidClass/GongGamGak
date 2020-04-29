@@ -12,6 +12,7 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,10 +30,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Intent intent;
     SpeechRecognizer mRecognizer;
     private TextView tv_result;
-    private Button btn_start,btn_objectDetection,btn_ocr;
+    private Button btn_start, btn_objectDetection, btn_ocr;
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
     private TextToSpeech tts;
-//wkrjdoiwefa
+
+    //wkrjdoiwefa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,39 +83,69 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRecognizer.setRecognitionListener(recognitionListener);
 
     }
-    private void setTTS(){
+
+    private void setTTS() {
         tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status != ERROR) {
+                if (status != ERROR) {
                     // 언어를 선택한다.
                     tts.setLanguage(Locale.KOREAN);
                 }
             }
         });
     }
-    private void handleVoiceOrder(String order){
+
+    private void handleVoiceOrder(String order) {
 //        들어줘 : 전체 기능을 음성으로 사용하는 기능
 //        읽어줘 : 텍스트 인식 후 사용자에게 들려주는 기능
 //        보여줘 : 앞에 어떤 물체가 있는지 알려주는 기능
-        switch (order){
+        switch (order) {
             case "읽어줘":
-                Intent intent = new Intent(MainActivity.this,ReadActivity.class);
+                Intent intent = new Intent(MainActivity.this, ReadActivity.class);
                 startActivity(intent);
                 break;
             case "보여줘":
+                //객체인식에서 감지되는 모든 사물을 말해주는 기능
+
 
                 break;
             case "알려줘":
+                //객체인식에서 감지되는 모든 사물을 말해주는 기능
 
+                break;
+            case "찾아줘":
+                //객체 인식에서 특정 사물을 찾는 기능
+
+                break;
+            case "도와줘":
+                //저장된 보호자에게 문자로 보내는 기능
+                sendMessage("01055770860","도와주세요");
                 break;
         }
     }
 
+    private void sendMessage(String phoneNumber, String content) {
+        String phoneNo = phoneNumber;
+        String sms = content;
+        try {
+            //전송
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNo, null, sms, null, null);
+            tts.speak("문자 보내기 성공", TextToSpeech.QUEUE_FLUSH, null);
+        } catch (Exception e) {
+            tts.speak("문자 보내기 실패", TextToSpeech.QUEUE_FLUSH, null);
+            Toast.makeText(getApplicationContext(), "SMS faild, please try again later!", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+
+    }
+
+
     private RecognitionListener recognitionListener = new RecognitionListener() {
         @Override
         public void onReadyForSpeech(Bundle bundle) {
-            tts.speak("원하시는 명령을 해주세요.",TextToSpeech.QUEUE_FLUSH, null);
+            tts.speak("원하시는 명령을 해주세요.", TextToSpeech.QUEUE_FLUSH, null);
         }
 
         @Override
@@ -163,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_start:
                 mRecognizer.startListening(intent);
                 break;
@@ -173,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.btn_ocr:
-                Intent intent2 = new Intent(MainActivity.this,ReadActivity.class);
+                Intent intent2 = new Intent(MainActivity.this, ReadActivity.class);
                 startActivity(intent2);
                 break;
         }
