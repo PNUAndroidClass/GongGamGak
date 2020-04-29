@@ -9,21 +9,30 @@
     tools:context=".activity.MainActivity">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <Button
             android:id="@+id/btn_objectDetection"
-            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="객체인식"/>
+            android:layout_weight="1"
+            android:text="객체인식" />
+
         <Button
             android:id="@+id/btn_ocr"
-            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="OCR"/>
+            android:layout_weight="1"
+            android:text="OCR" />
+
+        <Button
+            android:id="@+id/btn_tts"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="tts" />
 
     </LinearLayout>
 
