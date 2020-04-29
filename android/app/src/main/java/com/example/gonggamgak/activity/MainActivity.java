@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn_start,btn_objectDetection,btn_ocr;
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
     private TextToSpeech tts;
-
+//wkrjdoiwefa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
