@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "529206359337",
+    "firebase_url": "https://gonggamgak-35374.firebaseio.com",
+    "project_id": "gonggamgak-35374",
+    "storage_bucket": "gonggamgak-35374.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:529206359337:android:19b6270130837be24ab338",
+        "android_client_info": {
+          "package_name": "org.tensorflow.lite.examples.detection"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "529206359337-1r1f19g0rigvorrkkr5ccce5d1sltiv3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.tensorflow.lite.examples.detection",
+            "certificate_hash": "4c9a656848216d2991f5a833ed5ef601bb16a248"
+          }
+        },
+        {
+          "client_id": "529206359337-q6bpoubpnk0lukmcoccqjmg8us90q0a9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAogVPQl2vFoQ891nBYyHK285ekJrH_lSg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "529206359337-q6bpoubpnk0lukmcoccqjmg8us90q0a9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
