@@ -14,6 +14,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gonggamgak.R;
@@ -31,32 +32,49 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class FirebaseActivity extends AppCompatActivity {
     int PERMISSION_ID = 44;
     int a =0;
     String b;
     FusedLocationProviderClient mFusedLocationClient;
-    private Button button;
+    Button btn_start1;
+    Button btn_finish;
     private EditText latTextView;
     private EditText lonTextView;
+    TextView textView;
+    TimerTask timerTask;
+    Timer timer = new Timer();
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference("Gong");
     private Double longitude = null;
     private Double latitude = null;
+
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_firebase);
         latTextView = (EditText) findViewById(R.id.Latitude);
         lonTextView = (EditText) findViewById(R.id.Longitude);
-        button = (Button) findViewById(R.id.btn_test1);
+        btn_start1 = (Button) findViewById(R.id.btn_start1);
+        btn_finish = (Button) findViewById(R.id.btn_finish);
+        textView = findViewById(R.id.temp);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        button.setOnClickListener(new Button.OnClickListener() {
+
+        btn_start1.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                getLastLocation();
+                startTimerTask();
             }
         });
+        btn_finish.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                stopTimerTask();
+            }
+        });
+
     }
 
     @SuppressLint("MissingPermission")
@@ -159,5 +177,58 @@ public class FirebaseActivity extends AppCompatActivity {
             getLastLocation();
         }
 
+    }
+    @Override
+    protected void onDestroy()
+    {
+        timer.cancel();
+        super.onDestroy();
+    }
+
+    public void clickHandler(View view)
+    {
+        switch(view.getId())
+        {
+            case R.id.btn_start1:
+                startTimerTask();
+                break;
+            case R.id.btn_finish :
+                stopTimerTask();
+                break;
+        }
+    }
+
+    private void startTimerTask()
+    {
+        stopTimerTask();
+
+        timerTask = new TimerTask()
+        {
+            int count = 60;
+
+            @Override
+            public void run()
+            {
+                count--;
+                textView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        textView.setText(count + " 초");
+                        getLastLocation();
+                    }
+                });
+            }
+        };
+        timer.schedule(timerTask,0 ,1000);
+    }
+
+    private void stopTimerTask()
+    {
+        if(timerTask != null)
+        {
+            textView.setText("60 초");
+            timerTask.cancel();
+            timerTask = null;
+        }
     }
 }
