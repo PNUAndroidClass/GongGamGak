@@ -33,10 +33,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Intent intentListen;
     SpeechRecognizer mRecognizer;
     private TextView tv_result;
-    private Button btn_start, btn_objectDetection, btn_ocr, btn_tts;
+
+
+    private Button btn_start, btn_objectDetection, btn_ocr, btn_tts, btn_test;
+
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
     private TextToSpeech tts;
-
     //wkrjdoiwefa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +62,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_ocr = findViewById(R.id.btn_ocr);
         btn_ocr.setOnClickListener(this);
 
+
         btn_tts = findViewById(R.id.btn_tts);
         btn_tts.setOnClickListener(this);
-
+        btn_test = findViewById(R.id.btn_test);
+        btn_test.setOnClickListener(this);
 
         setVoiceRecognizer();
     }
@@ -229,6 +233,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent2);
                 break;
 
+            case R.id.btn_test:
+                Intent intent3 = new Intent(MainActivity.this, FirebaseActivity.class);
+                startActivity(intent3);
+                break;
+
             case R.id.btn_tts:
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -248,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(tts !=null){
             tts.stop();
             tts.shutdown();
+
         }
     }
 }
