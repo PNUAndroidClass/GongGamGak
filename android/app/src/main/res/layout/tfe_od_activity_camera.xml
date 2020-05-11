@@ -36,6 +36,7 @@
             tools:context="org.tensorflow.demo.CameraActivity" />
 
         <androidx.appcompat.widget.Toolbar
+            android:visibility="invisible"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -51,6 +52,7 @@
     </RelativeLayout>
 
     <include
+        android:visibility="invisible"
         android:id="@+id/bottom_sheet_layout"
         layout="@layout/tfe_od_layout_bottom_sheet" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

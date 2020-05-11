@@ -5,8 +5,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -22,15 +24,19 @@ import com.example.gonggamgak.DetectorActivity;
 import com.example.gonggamgak.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import static android.speech.tts.TextToSpeech.ERROR;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    Intent intent;
+    Intent intentListen;
     SpeechRecognizer mRecognizer;
     private TextView tv_result;
-    private Button btn_start, btn_objectDetection, btn_ocr, btn_test;
+
+
+    private Button btn_start, btn_objectDetection, btn_ocr, btn_tts, btn_test;
+
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
     private TextToSpeech tts;
     //wkrjdoiwefa
@@ -41,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         bindUI();
         setTTS();
+
 
     }
 
@@ -55,8 +62,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_ocr = findViewById(R.id.btn_ocr);
         btn_ocr.setOnClickListener(this);
 
+
+        btn_tts = findViewById(R.id.btn_tts);
+        btn_tts.setOnClickListener(this);
         btn_test = findViewById(R.id.btn_test);
         btn_test.setOnClickListener(this);
+
         setVoiceRecognizer();
     }
 
@@ -75,9 +86,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+        intentListen = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intentListen.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+        intentListen.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
 
         mRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         mRecognizer.setRecognitionListener(recognitionListener);
@@ -85,15 +96,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setTTS() {
-        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+        tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if (status != ERROR) {
-                    // 언어를 선택한다.
+                if (status != TextToSpeech.ERROR) {
                     tts.setLanguage(Locale.KOREAN);
                 }
             }
         });
+    }
+
+    @SuppressWarnings("deprecation")
+    private void ttsUnder20(String text) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void ttsGreater21(String text) {
+        String utteranceId = this.hashCode() + "";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
     }
 
     private void handleVoiceOrder(String order) {
@@ -115,12 +138,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case "찾아줘":
-                //객체 인식에서 특정 사물을 찾는 기능
+                tts.speak("무엇을 찾아드릴까요?", TextToSpeech.QUEUE_FLUSH, null);
+
 
                 break;
             case "도와줘":
                 //저장된 보호자에게 문자로 보내는 기능
-                sendMessage("01055770860","도와주세요");
+                sendMessage("01055770860", "도와주세요");
                 break;
         }
     }
@@ -197,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_start:
-                mRecognizer.startListening(intent);
+                mRecognizer.startListening(intentListen);
                 break;
             case R.id.btn_objectDetection:
                 Intent intent = new Intent(MainActivity.this, DetectorActivity.class);
@@ -208,10 +232,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent2 = new Intent(MainActivity.this, ReadActivity.class);
                 startActivity(intent2);
                 break;
+
             case R.id.btn_test:
                 Intent intent3 = new Intent(MainActivity.this, FirebaseActivity.class);
                 startActivity(intent3);
                 break;
+
+            case R.id.btn_tts:
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ttsGreater21("문자 보내기 성공");
+                } else {
+                    ttsUnder20("문자 보내기 성공");
+                }
+
+                break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(tts !=null){
+            tts.stop();
+            tts.shutdown();
+
         }
     }
 }
