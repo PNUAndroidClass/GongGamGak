@@ -37,7 +37,6 @@ public class ReadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
-
         bindUI();
         openCamera();
 
@@ -56,7 +55,6 @@ public class ReadActivity extends AppCompatActivity {
         image = ((BitmapDrawable) d).getBitmap();
         //언어파일 경로
         datapath = getFilesDir()+ "/tesseract/";
-
         //트레이닝데이터가 카피되어 있는지 체크
         checkFile(new File(datapath + "tessdata/"));
 

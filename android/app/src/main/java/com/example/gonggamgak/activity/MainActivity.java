@@ -47,7 +47,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         bindUI();
         setTTS();
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ttsGreater21("명령을 내리시려면 화면 하단을 터치해 주세요");
+        } else {
+            ttsUnder20("명령을 내리시려면 화면 하단을 터치해 주세요");
+        }
 
     }
 
@@ -130,7 +134,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case "보여줘":
                 //객체인식에서 감지되는 모든 사물을 말해주는 기능
-
+                Intent intent2 = new Intent(MainActivity.this, DetectorActivity.class);
+                startActivity(intent2);
 
                 break;
             case "알려줘":
@@ -239,11 +244,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.btn_tts:
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ttsGreater21("문자 보내기 성공");
+                    ttsGreater21("예시 tts 내용입니다.");
                 } else {
-                    ttsUnder20("문자 보내기 성공");
+                    ttsUnder20("예시 tts 내용입니다.");
                 }
 
                 break;
