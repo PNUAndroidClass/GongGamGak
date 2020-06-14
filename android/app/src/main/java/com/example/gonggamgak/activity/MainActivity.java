@@ -8,8 +8,11 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -21,10 +24,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gonggamgak.DetectorActivity;
+import com.example.gonggamgak.GpsTracker;
+import com.example.gonggamgak.MyService;
 import com.example.gonggamgak.R;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import static android.speech.tts.TextToSpeech.ERROR;
@@ -33,10 +40,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Intent intentListen;
     SpeechRecognizer mRecognizer;
     private TextView tv_result;
-
-
     private Button btn_start, btn_objectDetection, btn_ocr, btn_tts, btn_test;
-
+    //인혁
+    String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    private static final int GPS_ENABLE_REQUEST_CODE = 2001;
+    private static final int PERMISSIONS_REQUEST_CODE = 100;
+    private GpsTracker gpsTracker;
+    //
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
     private TextToSpeech tts;
     //wkrjdoiwefa
@@ -149,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case "도와줘":
                 //저장된 보호자에게 문자로 보내는 기능
+
                 sendMessage("01055770860", "도와주세요");
                 break;
         }
@@ -156,11 +167,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void sendMessage(String phoneNumber, String content) {
         String phoneNo = phoneNumber;
-        String sms = content;
+        gpsTracker = new GpsTracker(MainActivity.this);
+        double latitude = gpsTracker.getLatitude();
+        double longitude = gpsTracker.getLongitude();
+
+        String address = getCurrentAddress(latitude, longitude);
         try {
             //전송
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phoneNo, null, sms, null, null);
+            smsManager.sendTextMessage(phoneNo, null, address, null, null);
             tts.speak("문자 보내기 성공", TextToSpeech.QUEUE_FLUSH, null);
         } catch (Exception e) {
             tts.speak("문자 보내기 실패", TextToSpeech.QUEUE_FLUSH, null);
@@ -205,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String key = "";
             key = SpeechRecognizer.RESULTS_RECOGNITION;
             ArrayList<String> mResult = bundle.getStringArrayList(key);
-
             String[] rs = new String[mResult.size()];
             mResult.toArray(rs);
 
@@ -238,9 +252,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent2);
                 break;
 
-            case R.id.btn_test:
-                Intent intent3 = new Intent(MainActivity.this, FirebaseActivity.class);
-                startActivity(intent3);
+            case R.id.btn_test: // 이것을 누르면 service 실행되도록
+                Intent intent3 = new Intent(MainActivity.this, MyService.class);
+                startService(intent3);
                 break;
 
             case R.id.btn_tts:
@@ -263,5 +277,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tts.shutdown();
 
         }
+    }
+
+    public String getCurrentAddress( double latitude, double longitude) {
+
+        //지오코더... GPS를 주소로 변환
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        List<Address> addresses;
+
+        try {
+
+            addresses = geocoder.getFromLocation(
+                    latitude,
+                    longitude,
+                    7);
+        } catch (IOException ioException) {
+            //네트워크 문제
+            Toast.makeText(this, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
+            return "지오코더 서비스 사용불가";
+        } catch (IllegalArgumentException illegalArgumentException) {
+            Toast.makeText(this, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
+            return "잘못된 GPS 좌표";
+
+        }
+
+
+
+        if (addresses == null || addresses.size() == 0) {
+            Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show();
+            return "주소 미발견";
+
+        }
+
+        Address address = addresses.get(0);
+        return address.getAddressLine(0).toString()+"\n";
+
     }
 }
