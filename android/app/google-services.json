@@ -10,7 +10,8 @@
       "client_info": {
         "mobilesdk_app_id": "1:529206359337:android:19b6270130837be24ab338",
         "android_client_info": {
-          "package_name": "org.tensorflow.lite.examples.detection"
+          "package_name": "org.tensorflow.lite.examples.detection",
+          "package_name": "com.google.sample.cloudvision"
         }
       },
       "oauth_client": [
@@ -19,6 +20,7 @@
           "client_type": 1,
           "android_info": {
             "package_name": "org.tensorflow.lite.examples.detection",
+            "package_name": "com.google.sample.cloudvision",
             "certificate_hash": "4c9a656848216d2991f5a833ed5ef601bb16a248"
           }
         },

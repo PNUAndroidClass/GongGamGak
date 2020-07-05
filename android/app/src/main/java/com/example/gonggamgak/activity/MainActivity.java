@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -37,6 +38,7 @@ import java.util.Locale;
 import static android.speech.tts.TextToSpeech.ERROR;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    public static Context mContext = null;
     Intent intentListen;
     SpeechRecognizer mRecognizer;
     private TextView tv_result;
@@ -48,12 +50,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GpsTracker gpsTracker;
     //
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
-    private TextToSpeech tts;
+    TextToSpeech tts;
     //wkrjdoiwefa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mContext = this;
         setContentView(R.layout.activity_main);
         bindUI();
         setTTS();

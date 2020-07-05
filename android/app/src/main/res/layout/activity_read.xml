@@ -31,26 +31,13 @@
         android:layout_height="42dp"
         android:layout_below="@id/ImageContainer"
         android:background="#166e78"
-        android:clickable="true"
-        android:onClick="processImage">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:clickable="true"
-            android:onClick="processImage"
-            android:text="RUN OCR"
-            android:textColor="#ffffff"
-            android:textSize="18dp" />
-
+        android:clickable="true">
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/OCRButtonContainer"
+        android:layout_below="@+id/OCRButtonContainer"
         android:padding="10dp">
 
         <TextView
