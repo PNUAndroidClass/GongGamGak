@@ -19,6 +19,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -59,12 +60,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         bindUI();
         setTTS();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ttsGreater21("명령을 내리시려면 화면 하단을 터치해 주세요");
-        } else {
-            ttsUnder20("명령을 내리시려면 화면 하단을 터치해 주세요");
-        }
-
     }
 
     private void bindUI() {
@@ -120,6 +115,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            ttsGreater21("명령을 내리시려면 화면을 터치해 주세요");
+//        } else {
+//            ttsUnder20("명령을 내리시려면 화면을 터치해 주세요");
+//        }
     }
 
     @SuppressWarnings("deprecation")
@@ -140,6 +141,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        읽어줘 : 텍스트 인식 후 사용자에게 들려주는 기능
 //        보여줘 : 앞에 어떤 물체가 있는지 알려주는 기능
         switch (order) {
+            case "설명해줘":
+                String str = "안녕하세요! 앱 기능에 대해 설명드리겠습니다. 기본적으로 음성 명령을 내리시려면 화면을 터치해주시고 명령어를 말씀해 주시면 됩니다. 앱은 총 3가지 읽어줘, 보여줘, 도와, 기능이 있습니다. " +
+                        "읽어줘 라고 말씀해 주시면 텍스트 인식 기능을 사용하실 수 있습니다. 알고싶은 글자를 카메라로 찍어주세요. " +
+                        "보여줘 라고 말씀해 주시면 카메라에 인식되는 모든 물체를 알려 드립니다. 알고싶은 방향으로 카메라를 향해 주세요." +
+                        "도와줘 라고 말씀해 주시면 지정된 번호로 현재 위치와 함꼐 문자 메시지가 전송됩니다.";
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ttsGreater21(str);
+                } else {
+                    ttsUnder20(str);
+                }
+                break;
             case "읽어줘":
                 Intent intent = new Intent(MainActivity.this, ReadActivity.class);
                 startActivity(intent);
@@ -148,20 +160,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //객체인식에서 감지되는 모든 사물을 말해주는 기능
                 Intent intent2 = new Intent(MainActivity.this, DetectorActivity.class);
                 startActivity(intent2);
-
-                break;
-            case "알려줘":
-                //객체인식에서 감지되는 모든 사물을 말해주는 기능
-
-                break;
-            case "찾아줘":
-                tts.speak("무엇을 찾아드릴까요?", TextToSpeech.QUEUE_FLUSH, null);
-
-
                 break;
             case "도와줘":
                 //저장된 보호자에게 문자로 보내는 기능
-
                 sendMessage("01055770860", "도와주세요");
                 break;
         }
@@ -191,11 +192,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecognitionListener recognitionListener = new RecognitionListener() {
         @Override
         public void onReadyForSpeech(Bundle bundle) {
+            Log.e("readyFor Speehch","");
             tts.speak("원하시는 명령을 해주세요.", TextToSpeech.QUEUE_FLUSH, null);
         }
 
         @Override
         public void onBeginningOfSpeech() {
+            Log.e("readyFor Speehch","");
+
             tv_result.setText("듣는중입니다.");
         }
 
@@ -242,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_start:
+                Log.e("음성인식 시작","시작");
                 mRecognizer.startListening(intentListen);
                 break;
             case R.id.btn_objectDetection:
