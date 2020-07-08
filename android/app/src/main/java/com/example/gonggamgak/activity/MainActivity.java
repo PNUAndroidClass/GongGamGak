@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        들어줘 : 전체 기능을 음성으로 사용하는 기능
 //        읽어줘 : 텍스트 인식 후 사용자에게 들려주는 기능
 //        보여줘 : 앞에 어떤 물체가 있는지 알려주는 기능
+        order = order.replaceAll("\\s+","");
         switch (order) {
             case "설명해줘":
                 String str = "안녕하세요! 앱 기능에 대해 설명드리겠습니다. 기본적으로 음성 명령을 내리시려면 화면을 터치해주시고 명령어를 말씀해 주시면 됩니다. 앱은 총 3가지 읽어줘, 보여줘, 도와, 기능이 있습니다. " +
